@@ -1,0 +1,37 @@
+{
+  "name": "truth-scout",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "server": "nodemon server/index.js",
+    "server:prod": "node server/index.js",
+    "dev:all": "concurrently -n web,api -c cyan,magenta \"npm:dev\" \"npm:server\"",
+    "ingest:fifa": "node scripts/01-ingest-fifa22.js",
+    "ingest:ucl": "node scripts/02-ingest-ucl.js",
+    "match": "node scripts/03-match-players.js",
+    "train": "node scripts/04-train-model.js",
+    "predict": "node scripts/05-predict-all.js",
+    "pipeline": "npm run ingest:fifa && npm run ingest:ucl && npm run match && npm run train && npm run predict"
+  },
+  "dependencies": {
+    "@tensorflow/tfjs": "^4.22.0",
+    "better-sqlite3": "^11.5.0",
+    "cors": "^2.8.5",
+    "csv-parser": "^3.0.0",
+    "express": "^4.21.1",
+    "fastest-levenshtein": "^1.0.16",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^9.1.0",
+    "nodemon": "^3.1.7",
+    "vite": "^6.0.3"
+  }
+}

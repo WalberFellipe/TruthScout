@@ -1,0 +1,39 @@
+:root,
+[data-theme="dark"] {
+  --color-bg: #0b0f14;
+  --color-surface: #131a22;
+  --color-surface-2: #1c2530;
+  --color-line: #26313f;
+  --color-fg: #f1f5f9;
+  --color-fg-dim: #94a3b8;
+  --color-fg-dimmer: #5b6b7f;
+  --color-positive: #00e676;
+  --color-negative: #ff5252;
+  --font-display: "Geist", "Manrope", system-ui, -apple-system, sans-serif;
+  --font-body: "Geist", "Manrope", system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, Menlo, monospace;
+  --bg: var(--color-bg);
+  --surface: var(--color-surface);
+  --surface-2: var(--color-surface-2);
+  --line: var(--color-line);
+  --fg: var(--color-fg);
+  --fg-dim: var(--color-fg-dim);
+  --fg-dimmer: var(--color-fg-dimmer);
+  --pos: var(--color-positive);
+  --neg: var(--color-negative);
+  --display: var(--font-display);
+  --body: var(--font-body);
+  --mono: var(--font-mono);
+}
+
+[data-theme="light"] {
+  --color-bg: #f7f8fa;
+  --color-surface: #ffffff;
+  --color-surface-2: #f1f3f6;
+  --color-line: #e2e6ec;
+  --color-fg: #0b0f14;
+  --color-fg-dim: #55637a;
+  --color-fg-dimmer: #9aa5b8;
+  --color-positive: #00a85a;
+  --color-negative: #e63946;
+}
