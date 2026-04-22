@@ -202,6 +202,53 @@ npm run dev           # frontend only (no API)
 
 ---
 
+## Deploy (Vercel)
+
+Truth Scout runs as a **100% static site** in production. The pipeline pre-computes every prediction offline, dumps them into `public/api/players.json` + `public/api/stats.json`, and the React app fetches those directly — no backend, no database, no cold starts, no ongoing cost.
+
+```
+Local                                       Vercel
+-----                                       ------
+npm run pipeline                            git push
+  ↓                                           ↓
+  ├─ ingest FIFA + UCL → SQLite             Vercel runs npm run build
+  ├─ fuzzy match                              ↓
+  ├─ train TF.js MLP                        Serves dist/ as static site
+  └─ export:json → public/api/*.json        (including /api/*.json)
+  ↓
+git commit public/api/*.json
+```
+
+### Steps
+
+1. **Run the pipeline locally** — produces the prediction JSONs:
+   ```bash
+   npm run pipeline
+   ```
+2. **Commit the generated JSONs** (they're the deployment artifact):
+   ```bash
+   git add public/api/players.json public/api/stats.json
+   git commit -m "regenerate predictions"
+   ```
+3. **Connect the repo to Vercel** — `https://vercel.com/new`, import the GitHub repo. Vercel auto-detects Vite, runs `npm install && npm run build`, and serves `dist/`. No `vercel.json` needed.
+4. **Done.** Every future push redeploys. To update predictions, re-run the pipeline locally and commit the new JSONs.
+
+### Environment detection
+
+The [API client](src/api/client.js) transparently switches between the two worlds:
+
+- **`npm run dev:all`** — hits the live Express API at `localhost:3001` (via Vite proxy). Useful for backend iteration.
+- **`npm run build && npm run preview`** — simulates production locally, serves static JSONs from `dist/api/`.
+- **Vercel deploy** — identical to preview, just on a real URL.
+
+`import.meta.env.DEV` picks the right path automatically. No build flags to flip.
+
+### Why static over serverless functions
+
+The predictions are **immutable outputs of an offline pipeline**. The Express server never re-trains, never regenerates — it just reads rows and returns JSON. Collapsing that into a pre-baked JSON file removes an entire tier of infrastructure without losing anything. The app is full-stack in **development** (Vite + Express + SQLite + TF.js all coexisting for easy iteration) and a single static bundle in **production**.
+
+---
+
 ## Repo layout
 
 ```

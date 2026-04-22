@@ -1,5 +1,10 @@
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import * as tf from "@tensorflow/tfjs";
 import { getDb, closeDb } from "../server/db/connection.js";
+
+const __dirnameTrain = path.dirname(fileURLToPath(import.meta.url));
 
 const db = getDb();
 
@@ -180,10 +185,38 @@ const history = await model.fit(xTrain, yTrain, {
 
 // MAE em gols/jogo na validação
 const finalValMae = history.history.val_mae[history.history.val_mae.length - 1];
+const finalTrainMae = history.history.mae[history.history.mae.length - 1];
+const finalValLoss = history.history.val_loss[history.history.val_loss.length - 1];
 console.log(
   `\n[train] MAE final na validação: ${finalValMae.toFixed(3)} gols/jogo ` +
     `(≈ ${(finalValMae * 6).toFixed(2)} gols numa fase de grupos de 6 jogos)`,
 );
+
+// Persiste metadados do treino pro relatório de pipeline (consumido
+// pelo script 05 e renderizado no modal de Metodologia).
+const trainingMeta = {
+  generatedAt: new Date().toISOString(),
+  featureCount: FEATURE_COLS.length,
+  totalParameters: model.countParams(),
+  trainSize: train.length,
+  valSize: val.length,
+  datasetSize: clean.length,
+  epochs: 200,
+  batchSize: 32,
+  optimizer: "adam",
+  learningRate: 0.003,
+  loss: "meanSquaredError",
+  l2Regularization: 0.01,
+  dropoutRate: 0.2,
+  architecture: "Dense(32, ReLU) → Dropout(0.2) → Dense(16, ReLU) → Dropout(0.2) → Dense(1, linear)",
+  finalTrainMae: Number(finalTrainMae.toFixed(4)),
+  finalValMae: Number(finalValMae.toFixed(4)),
+  finalValLoss: Number(finalValLoss.toFixed(4)),
+  attackingPositions: ATTACKING_POSITIONS,
+};
+const metaPath = path.resolve(__dirnameTrain, "../db/training-meta.json");
+fs.writeFileSync(metaPath, JSON.stringify(trainingMeta, null, 2));
+console.log(`[train] meta de treino → ${metaPath}`);
 
 // === PREDIÇÕES PRA TODOS ===
 // Dedupe por sofifa_id — pode acontecer de dois nomes UCL diferentes matchem

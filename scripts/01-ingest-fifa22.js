@@ -29,6 +29,11 @@ console.log(`[ingest:fifa] ${rows.length} linhas lidas do xlsx`);
 
 const db = getDb();
 
+// Desliga FK durante o rebuild — player_matches (criado depois no script 03)
+// tem FK apontando pra cá. Sem isso, o DROP falha na segunda execução do
+// pipeline. Religamos no final.
+db.pragma("foreign_keys = OFF");
+
 db.exec(`
   DROP TABLE IF EXISTS fifa22_players;
 
@@ -231,4 +236,5 @@ console.log(`[ingest:fifa] total na tabela: ${count}`);
 console.log("[ingest:fifa] top 5 por overall:");
 console.table(sample);
 
+db.pragma("foreign_keys = ON");
 closeDb();

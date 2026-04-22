@@ -1,0 +1,98 @@
+{
+  "generatedAt": "2026-04-21T16:52:37.374Z",
+  "datasets": {
+    "fifaSource": 19239,
+    "uclSource": 750
+  },
+  "matching": {
+    "total": 750,
+    "matched": 662,
+    "unmatched": 88,
+    "rate": 0.8827,
+    "confidenceBuckets": {
+      "exact": 159,
+      "high": 2,
+      "good": 437,
+      "medium": 48,
+      "low": 16,
+      "veryLow": 0
+    }
+  },
+  "training": {
+    "generatedAt": "2026-04-21T16:52:36.876Z",
+    "featureCount": 33,
+    "totalParameters": 1633,
+    "trainSize": 173,
+    "valSize": 44,
+    "datasetSize": 217,
+    "epochs": 200,
+    "batchSize": 32,
+    "optimizer": "adam",
+    "learningRate": 0.003,
+    "loss": "meanSquaredError",
+    "l2Regularization": 0.01,
+    "dropoutRate": 0.2,
+    "architecture": "Dense(32, ReLU) → Dropout(0.2) → Dense(16, ReLU) → Dropout(0.2) → Dense(1, linear)",
+    "finalTrainMae": 0.1166,
+    "finalValMae": 0.1677,
+    "finalValLoss": 0.0602,
+    "attackingPositions": [
+      "ST",
+      "CF",
+      "LS",
+      "RS",
+      "LF",
+      "RF",
+      "LW",
+      "RW",
+      "CAM",
+      "LAM",
+      "RAM",
+      "LM",
+      "RM"
+    ]
+  },
+  "predictions": {
+    "count": 216,
+    "overperformers": 85,
+    "underperformers": 127,
+    "goalsAboveExpected": 92.7
+  },
+  "topScorersReal": [
+    {
+      "player_name": "Benzema",
+      "club": "Real Madrid",
+      "position": "Forward",
+      "goals": 15,
+      "matches_played": 12
+    },
+    {
+      "player_name": "Lewandowski",
+      "club": "Bayern",
+      "position": "Forward",
+      "goals": 13,
+      "matches_played": 10
+    },
+    {
+      "player_name": "Haller",
+      "club": "Ajax",
+      "position": "Forward",
+      "goals": 11,
+      "matches_played": 8
+    },
+    {
+      "player_name": "Salah",
+      "club": "Liverpool",
+      "position": "Forward",
+      "goals": 8,
+      "matches_played": 13
+    },
+    {
+      "player_name": "Mahrez",
+      "club": "Man. City",
+      "position": "Midfielder",
+      "goals": 7,
+      "matches_played": 12
+    }
+  ]
+}

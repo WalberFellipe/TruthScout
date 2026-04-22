@@ -200,6 +200,10 @@ console.log(`[ingest:ucl] ${players.size} jogadores únicos após merge`);
 
 const db = getDb();
 
+// Mesma razão do script 01: player_matches tem FK apontando pra cá,
+// então o DROP falharia na segunda execução do pipeline com FK on.
+db.pragma("foreign_keys = OFF");
+
 db.exec(`
   DROP TABLE IF EXISTS ucl_players;
   CREATE TABLE ucl_players (
@@ -314,4 +318,5 @@ const top = db
 console.log("[ingest:ucl] top 5 artilheiros:");
 console.table(top);
 
+db.pragma("foreign_keys = ON");
 closeDb();

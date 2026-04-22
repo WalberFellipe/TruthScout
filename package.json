@@ -14,8 +14,8 @@
     "ingest:ucl": "node scripts/02-ingest-ucl.js",
     "match": "node scripts/03-match-players.js",
     "train": "node scripts/04-train-model.js",
-    "predict": "node scripts/05-predict-all.js",
-    "pipeline": "npm run ingest:fifa && npm run ingest:ucl && npm run match && npm run train && npm run predict"
+    "export:json": "node scripts/05-export-json.js",
+    "pipeline": "npm run ingest:fifa && npm run ingest:ucl && npm run match && npm run train && npm run export:json"
   },
   "dependencies": {
     "@tensorflow/tfjs": "^4.22.0",

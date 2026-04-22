@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
+import { usePipelineReport } from "@/hooks/usePipelineReport.js";
+import { PipelineReport } from "./PipelineReport.jsx";
 
 // Modal que documenta tudo que a app faz: ingestão, matching, features,
 // modelo e limitações. Mesma estética de overlay do DetailModal.
 
 export function MethodologyModal({ onClose, t }) {
   const m = t.methodology;
+  const report = usePipelineReport();
   const [entered, setEntered] = useState(false);
 
   useEffect(() => {
@@ -177,55 +180,58 @@ export function MethodologyModal({ onClose, t }) {
           </p>
         </Section>
 
-        {/* Metrics */}
-        <Section eyebrow={m.metrics_title}>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: `repeat(${m.metrics.length}, 1fr)`,
-              gap: 1,
-              background: "var(--line)",
-              border: "1px solid var(--line)",
-              borderRadius: 14,
-              overflow: "hidden",
-            }}
-          >
-            {m.metrics.map((kpi, i) => (
-              <div
-                key={i}
-                style={{
-                  background: "var(--surface)",
-                  padding: "18px 14px",
-                }}
-              >
+        {/* Pipeline Report — dados REAIS da última execução. Se o
+            pipeline.json ainda não existe (dev sem rodar o train),
+            cai no fallback com os KPIs estáticos abaixo. */}
+        {report ? (
+          <PipelineReport t={t} report={report} />
+        ) : (
+          <Section eyebrow={m.metrics_title}>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: `repeat(${m.metrics.length}, 1fr)`,
+                gap: 1,
+                background: "var(--line)",
+                border: "1px solid var(--line)",
+                borderRadius: 14,
+                overflow: "hidden",
+              }}
+            >
+              {m.metrics.map((kpi, i) => (
                 <div
-                  style={{
-                    fontFamily: "var(--mono)",
-                    fontSize: 9,
-                    letterSpacing: "0.14em",
-                    color: "var(--fg-dimmer)",
-                    textTransform: "uppercase",
-                  }}
+                  key={i}
+                  style={{ background: "var(--surface)", padding: "18px 14px" }}
                 >
-                  {kpi.label}
+                  <div
+                    style={{
+                      fontFamily: "var(--mono)",
+                      fontSize: 9,
+                      letterSpacing: "0.14em",
+                      color: "var(--fg-dimmer)",
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    {kpi.label}
+                  </div>
+                  <div
+                    style={{
+                      fontFamily: "var(--display)",
+                      fontWeight: 800,
+                      fontSize: 22,
+                      marginTop: 4,
+                      letterSpacing: "-0.02em",
+                      color: "var(--fg)",
+                      fontVariantNumeric: "tabular-nums",
+                    }}
+                  >
+                    {kpi.value}
+                  </div>
                 </div>
-                <div
-                  style={{
-                    fontFamily: "var(--display)",
-                    fontWeight: 800,
-                    fontSize: 22,
-                    marginTop: 4,
-                    letterSpacing: "-0.02em",
-                    color: "var(--fg)",
-                    fontVariantNumeric: "tabular-nums",
-                  }}
-                >
-                  {kpi.value}
-                </div>
-              </div>
-            ))}
-          </div>
-        </Section>
+              ))}
+            </div>
+          </Section>
+        )}
 
         {/* Limits */}
         <Section eyebrow={m.limits_title}>
